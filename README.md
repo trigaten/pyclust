@@ -1,7 +1,7 @@
 # pyclust
 This is a set of scripts, and results, that compares the different clustering options in python's sklearn, to the mclust package in R
 
-In the main directory we have a few files:
+In the main directory we have a few files: \
 embedded_right.csv - the embedded data from https://github.com/youngser/mbstructure
 classes.csv - the true classes from https://github.com/youngser/mbstructure
 brute_cluster.py - searches over many ways to cluster with sklearn, finds best BIC and ARI
