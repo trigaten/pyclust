@@ -8,7 +8,7 @@ brute_cluster.py - searches over many ways to cluster with sklearn, finds best B
 brute_cluster.r - uses mclust to search over clustering methods to find that best BIC and ARI \
 	Note: technically, I let mclust calculate BIC its own way, but I have verified its calculations on several examples \
 Various images made by the brute_cluster scripts \
-show_clusters - latex document that presents the images \
+show_clusters - latex document that presents the images
 
 In the compare_bic directory, we directly compare the analagous methods in mclust and python:
 
@@ -20,5 +20,5 @@ calc_bic_r.py - reads the parameters in the r_em_params directory then calculate
 bic_plots.opy - read the bic csv results and compares graphs the results, comparing python and R head to head \
 bic.py - contains functions used to calculate BIC \
 Various images made by bic_plots.py \
-compare_bic - latex document that presents the images \
+compare_bic - latex document that presents the images
 
