@@ -26,7 +26,10 @@ def calcBIC(x,wts,means,variances,k):
     for wt,mu,var in zip(wts,means,variances):
         mu = np.squeeze(mu)
         var = np.squeeze(var)
-        var = multivariate_normal(mu,var)
+        try:
+            var = multivariate_normal(mu,var)
+        except np.linalg.LinAlgError:
+            return -np.inf
         likelihood += wt*var.pdf(x)
     loglik = np.sum(np.log(likelihood))
     bic = 2*loglik-np.log(n)*k
