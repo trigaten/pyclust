@@ -43,8 +43,8 @@ elif dataset==2:
     c_true = np.genfromtxt('data/T36.1', delimiter=',', usecols = (9),skip_header=0)
 elif dataset==3:
     ks = [i for i in range(1,21)]
-    affinities = ['none']#,'euclidean']
-    linkages = ['none']#,'ward','complete']
+    affinities = ['none','euclidean','manhattan','cosine']
+    linkages = ['none','ward','complete','average','single']#,'ward','complete']
     covariance_types=['full','tied','diag','spherical']
     
     x = np.genfromtxt('data/highd.csv', delimiter=',',skip_header=0)

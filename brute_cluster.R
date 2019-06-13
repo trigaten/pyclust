@@ -7,7 +7,7 @@ setwd("C:/Users/Thomas Athey/Documents/Labs/Labs/jovo/clustering/pyclust")
 
 #0-drosophila, 1-BC, 2-diabetes, 3-highd
 dataset = 3
-savefigs = NULL
+savefigs = 'lowd'
 
 if (dataset==0) {
   X <- read.csv(file='data/embedded_right.csv',header=TRUE,sep=',')
@@ -29,7 +29,7 @@ if (dataset==0) {
   ks <- 1:20
 } else if (dataset==3) {
   X <- read.csv(file='data/highd.csv',header=FALSE,sep = ',')[,-1]
-  c <- read.csv(file='data/highd.csv',header=FALSE, sep = ',')[,1]
+  c <- read.csv(file='data/highd.csv',header=FALSE, sep = ',')[,1]+1
   modelNames=mclust.options("emModelNames")
   ks <- 1:20
 }
