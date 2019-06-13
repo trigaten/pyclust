@@ -3,8 +3,13 @@ import numpy as np
 n = 100
 d = 3
 w = [0.33,0.33,0.34]
-means = [[0,0,0],[0,10,0],[0,0,10]]
-cov = [np.identity(3) for i in w]
+
+k = len(w)
+z = np.zeros([d])
+means = [np.copy(z) for i in range(k)]
+means[1][0] = 5
+means[2][1] = 5
+cov = [np.identity(d) for i in w]
 x = np.zeros([n,d+1])
 
 thresholds = np.cumsum(w)

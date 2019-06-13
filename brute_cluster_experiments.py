@@ -5,7 +5,7 @@ import csv
 
 #0-drosophila, 1-BC, 2-diabetes, 3-highd
 dataset = 3
-savefigs = 'highd'
+savefigs = 'lowd'
 
 if dataset == 0:
     #Drosophila
@@ -43,7 +43,12 @@ elif dataset==2:
     c_true = np.genfromtxt('data/T36.1', delimiter=',', usecols = (9),skip_header=0)
 elif dataset==3:
     ks = [i for i in range(1,21)]
-    x = np.genfromtxt('data/highd.csv', delimiter=',', usecols = (1,2,3),skip_header=0)
+    affinities = ['none']#,'euclidean']
+    linkages = ['none']#,'ward','complete']
+    covariance_types=['full','tied','diag','spherical']
+    
+    x = np.genfromtxt('data/highd.csv', delimiter=',',skip_header=0)
+    x = x[:,np.arange(1,x.shape[1])]
     c_true = np.genfromtxt('data/highd.csv', delimiter=',', usecols = (0),skip_header=0)
 
 

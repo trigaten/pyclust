@@ -28,7 +28,7 @@ if (dataset==0) {
   modelNames=mclust.options("emModelNames")
   ks <- 1:20
 } else if (dataset==3) {
-  X <- read.csv(file='data/highd.csv',header=FALSE,sep = ',')[,c(2,3,4)]
+  X <- read.csv(file='data/highd.csv',header=FALSE,sep = ',')[,-1]
   c <- read.csv(file='data/highd.csv',header=FALSE, sep = ',')[,1]
   modelNames=mclust.options("emModelNames")
   ks <- 1:20
@@ -39,7 +39,7 @@ colors = c('red','blue','green','yellow','brown','black', 'orange',"coral","cyan
 #true labels******************************
 plots <- data.frame('x1'=unlist(X[1]),"x2"=unlist(X[2]),"c_true"=c)
 if (! is.null(savefigs)) {
-  title = paste(savefigs,'_r_true.jpg')
+  title = paste(savefigs,'_r_true.jpg',sep="")
   jpeg(title)
   plot(plots$x1,plots$x2,col=colors[plots$c_true],pch=19,xlab='feature 1',ylab='feature 2',main='True labels')
   dev.off()
@@ -50,7 +50,7 @@ if (! is.null(savefigs)) {
 #bicplot********************************
 BIC <- mclustBIC(X,ks,verbose=FALSE, modelNames=modelNames)
 if (! is.null(savefigs)) {
-  title = paste(savefigs,'_r_bicplot.jpg')
+  title = paste(savefigs,'_r_bicplot.jpg',sep="")
   jpeg(title)
   plot(BIC)
   dev.off()
@@ -75,9 +75,9 @@ for(model_num in 0:(length(BIC)-1)) {
 }
 stats <- data.frame('bic'=BIC[1:266],'ari'=ARI[1:266],'model'=ARI_models[1:266])
 linmod <- lm(stats$ari ~ stats$bic)
-header <- paste("Mclust's ARI vs BIC on Drosophila Data with Correlation r^2=",format(summary(linmod)$r.squared,digits=3))
+header <- paste("Mclust's ARI vs BIC on Drosophila Data with Correlation r^2=",format(summary(linmod)$r.squared,digits=3),sep="")
 if (! is.null(savefigs)) {
-  title <- paste(savefigs,'_r_bicari.jpg') 
+  title <- paste(savefigs,'_r_bicari.jpg',sep="") 
   jpeg(title)
   plot(stats$bic,stats$ari,col=colors[stats$model],xlab='bic',ylab='ari',main=header)
   dev.off()
@@ -99,7 +99,7 @@ print(best_combo_bic)
 print(best_bic)
 header <- paste('mclust Best BIC:',format(best_bic,digits=3),'from:',best_combo_bic,', k=',best_g_bic,'ari=',format(best_ari_bic,digits=3),sep=' ')
 if (! is.null(savefigs)) {
-  title <- paste(savefigs,'_r_bestbic.jpg') 
+  title <- paste(savefigs,'_r_bestbic.jpg',sep="") 
   jpeg(title)
   plot(plots$x1,plots$x2,col=colors[plots$c_hat_bic],pch=19,xlab='feature 1',ylab='feature 2',main=header)
   dev.off()
@@ -135,7 +135,7 @@ print(best_combo_ari)
 print(best_ari)
 header <- paste('mclust Best ARI:',format(best_ari,digits=3),'from:',best_combo_ari,', k=',best_g_ari,sep=' ')
 if (! is.null(savefigs)) {
-  title <- paste(savefigs,'_r_bestari.jpg') 
+  title <- paste(savefigs,'_r_bestari.jpg',sep="") 
   jpeg(title)
   plot(plots$x1,plots$x2,col=colors[plots$c_hat_ari],pch=19,xlab='feature 1',ylab='feature 2',main=header)
   dev.off()
