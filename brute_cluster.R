@@ -5,8 +5,8 @@ Runs all clustering methods and saves that with the best ari and bic
 library("mclust")
 setwd("C:/Users/Thomas Athey/Documents/Labs/Labs/jovo/clustering/pyclust")
 
-#0-drosophila, 1-BC, 2-diabetes
-dataset = 2
+#0-drosophila, 1-BC, 2-diabetes, 3-highd
+dataset = 3
 savefigs = NULL
 
 if (dataset==0) {
@@ -26,7 +26,12 @@ if (dataset==0) {
   X <- read.csv(file='data/T36.1',header=FALSE,sep = ',')[,c(7,8,9)]
   c <- read.csv(file='data/T36.1',header=FALSE, sep = ',')[,10]
   modelNames=mclust.options("emModelNames")
-  ks <- 1:6
+  ks <- 1:20
+} else if (dataset==3) {
+  X <- read.csv(file='data/highd.csv',header=FALSE,sep = ',')[,c(2,3,4)]
+  c <- read.csv(file='data/highd.csv',header=FALSE, sep = ',')[,1]
+  modelNames=mclust.options("emModelNames")
+  ks <- 1:20
 }
 
 colors = c('red','blue','green','yellow','brown','black', 'orange',"coral","cyan","darkolivegreen1","gold2","burlywood","gray64","deeppink")

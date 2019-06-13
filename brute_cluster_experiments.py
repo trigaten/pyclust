@@ -3,9 +3,9 @@ from brute_cluster import brute_cluster
 import csv
 
 
-#0-drosophila, 1-BC, 2-diabetes
-dataset = 2
-savefigs = None
+#0-drosophila, 1-BC, 2-diabetes, 3-highd
+dataset = 3
+savefigs = 'highd'
 
 if dataset == 0:
     #Drosophila
@@ -13,7 +13,6 @@ if dataset == 0:
     affinities = ['none','euclidean','manhattan','cosine']
     linkages = ['none','ward','complete','average','single']
     covariance_types=['full','tied','diag','spherical']
-    bicplot = True
     x = np.genfromtxt('data/embedded_right.csv',delimiter=',',skip_header=1)
     c_true = np.genfromtxt('data/classes.csv',skip_header=1)
 elif dataset==1:
@@ -22,7 +21,6 @@ elif dataset==1:
     affinities = ['none','euclidean','manhattan','cosine']
     linkages = ['none','ward','complete','average','single']
     covariance_types=['full','tied']
-    bicplot=True
     
     #read mean texture, extreme area, and extreme smoothness
     x = np.genfromtxt('data/wdbc.data',delimiter=',', usecols = (3,25,26),skip_header=0)
@@ -39,11 +37,14 @@ elif dataset==2:
     affinities = ['none','euclidean','manhattan','cosine']
     linkages = ['none','ward','complete','average','single']
     covariance_types=['full','tied','diag','spherical']
-    bicplot=True
     
     #read glucose area, insulin area, and SSPG
     x = np.genfromtxt('data/T36.1', delimiter=',', usecols = (6,7,8),skip_header=0)
     c_true = np.genfromtxt('data/T36.1', delimiter=',', usecols = (9),skip_header=0)
+elif dataset==3:
+    ks = [i for i in range(1,21)]
+    x = np.genfromtxt('data/highd.csv', delimiter=',', usecols = (1,2,3),skip_header=0)
+    c_true = np.genfromtxt('data/highd.csv', delimiter=',', usecols = (0),skip_header=0)
 
 
 bics, aris = brute_cluster(x, affinities, linkages, covariance_types, ks,
