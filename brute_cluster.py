@@ -235,29 +235,31 @@ def brute_cluster(x, affinities, linkages,
     
     
     #True plot**********************************
-    plt.figure(figsize=(8,8))
+    fig_true = plt.figure(figsize=(8,8))
     ptcolors = [colors[i] for i in c_true.astype(int)]
-    plt.scatter(x[:,0],x[:,1],c=ptcolors)
-    plt.title("True labels")
-    plt.xlabel("First feature")
-    plt.ylabel("Second feature")
+    ax_true = fig_true.add_subplot(1,1,1)
+    ax_true.scatter(x[:,0],x[:,1],c=ptcolors)
+    ax_true.set_title("True labels")
+    ax_true.set_xlabel("First feature")
+    ax_true.set_ylabel("Second feature")
     if savefigs is not None:
         plt.savefig(savefigs+'_python_true.jpg')
-    
+
     #Plot with best BIC*********************************
-    plt.figure(figsize=(8,8))
+    fig_bestbic = plt.figure(figsize=(8,8))
+    ax_bestbic = fig_bestbic.add_subplot(1,1,1)
     #ptcolors = [colors[i] for i in best_c_hat_bic]
-    plt.scatter(x[:,0],x[:,1],c=best_c_hat_bic)
+    ax_bestbic.scatter(x[:,0],x[:,1],c=best_c_hat_bic)
     #mncolors = [colors[i] for i in np.arange(best_k_bic)]
     mncolors = [i for i in np.arange(best_k_bic)]
-    plt.scatter(best_means_bic[:,0],best_means_bic[:,1],
+    ax_bestbic.scatter(best_means_bic[:,0],best_means_bic[:,1],
                 c=mncolors,marker='x')
-    plt.title("py(agg-gmm) BIC %3.0f from "%best_bic +
+    ax_bestbic.set_title("py(agg-gmm) BIC %3.0f from "%best_bic +
               str(best_combo_bic) + " k=" + str(best_k_bic) +
               ' ari=%1.3f'%best_ari_bic + ' reg=' + str(reg_bic))# + "iter=" + str(best_iter_bic))
-    plt.legend()
-    plt.xlabel("First feature")
-    plt.ylabel("Second feature")
+    ax_bestbic.legend()
+    ax_bestbic.set_xlabel("First feature")
+    ax_bestbic.set_ylabel("Second feature")
     if savefigs is not None:
         plt.savefig(savefigs+'_python_bestbic.jpg')
 
@@ -265,31 +267,33 @@ def brute_cluster(x, affinities, linkages,
     
     if c_true is not None:
         #Plot with best ARI************************************
-        plt.figure(figsize=(8,8))
+        fig_bestari = plt.figure(figsize=(8,8))
+        ax_bestari = fig_bestari.add_subplot(1,1,1)
         ptcolors = [colors[i] for i in best_c_hat_ari]
-        plt.scatter(x[:,0],x[:,1],c=ptcolors)
-        plt.title("py(agg-gmm) ARI %3.3f from "%best_ari +
+        ax_bestari.scatter(x[:,0],x[:,1],c=ptcolors)
+        ax_bestari.set_title("py(agg-gmm) ARI %3.3f from "%best_ari +
                   str(best_combo_ari) + " k=" + str(best_k_ari))# + "iter=" + str(best_iter_ari))
-        plt.xlabel("First feature")
-        plt.ylabel("Second feature")
+        ax_bestari.set_xlabel("First feature")
+        ax_bestari.set_ylabel("Second feature")
         if savefigs is not None:
             plt.savefig(savefigs+'_python_bestari.jpg')
             
         #ARI vs BIC********************************
-        plt.figure(figsize=(8,8))
+        fig_bicari = plt.figure(figsize=(8,8))
+        ax_bicari = fig_bicari.add_subplot(1,1,1)
         for row in np.arange(4):
             xs = bics[row*11:(row+1)*11,:]
             ys = aris[row*11:(row+1)*11,:]
             idxs = (xs!=-np.inf)*(ys!=-np.inf)
-            plt.scatter(xs[idxs],ys[idxs],
+            ax_bicari.scatter(xs[idxs],ys[idxs],
                         label=titles[row])
             
         idxs = (bics!=-np.inf)*(aris!=-np.inf)
         slope,_,r_value,_,p_value = stats.linregress(bics[idxs],aris[idxs])
-        plt.xlabel("BIC")
-        plt.ylabel("ARI")
-        plt.legend(loc='lower right')
-        plt.title("Pyclust's ARI vs BIC for Drosophila Data with Correlation r^2=%2.2f"%(r_value**2))
+        ax_bicari.set_xlabel("BIC")
+        ax_bicari.set_ylabel("ARI")
+        ax_bicari.legend(loc='lower right')
+        ax_bicari.set_title("Pyclust's ARI vs BIC for Drosophila Data with Correlation r^2=%2.2f"%(r_value**2))
         if savefigs is not None:
             plt.savefig(savefigs+'_python_bicari.jpg')
     
@@ -322,7 +326,7 @@ def brute_cluster(x, affinities, linkages,
     ax3.set(xlabel='k')
     if savefigs is not None:
         plt.savefig(savefigs+'_python_bicplot.jpg')
-     
+    plt.show()
     return best_c_hat_bic
     
 

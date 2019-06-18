@@ -4,9 +4,9 @@ import csv
 
 
 
-dataset = 1 #0-drosophila, 1-BC, 2-diabetes, 3-gaussianmix
+dataset = 0 #0-drosophila, 1-BC, 2-diabetes, 3-gaussianmix
 #None - no figures will be saved, string - files will be saved with that name
-savefigs = 'bc' 
+savefigs = "drosophila" 
 
 if dataset == 0:
     #Drosophila
