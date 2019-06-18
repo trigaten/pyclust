@@ -19,4 +19,4 @@ for i in np.arange(n):
     x[i,0] = component
     x[i,1:] = np.random.multivariate_normal(means[component],cov[component])
     
-np.savetxt('data/highd.csv',x,delimiter=',')
+np.savetxt('data/synthetic.csv',x,delimiter=',')
