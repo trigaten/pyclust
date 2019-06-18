@@ -48,9 +48,9 @@ elif dataset==3:
     linkages = ['none','ward','complete','average','single']#,'ward','complete']
     covariance_types=['full','tied','diag','spherical']
     
-    x = np.genfromtxt('data/highd.csv', delimiter=',',skip_header=0)
+    x = np.genfromtxt('data/synthetic.csv', delimiter=',',skip_header=0)
     x = x[:,np.arange(1,x.shape[1])]
-    c_true = np.genfromtxt('data/highd.csv', delimiter=',', usecols = (0),skip_header=0)
+    c_true = np.genfromtxt('data/synthetic.csv', delimiter=',', usecols = (0),skip_header=0)
 
 
 c_hat = brute_cluster(x, affinities, linkages, covariance_types, ks,
