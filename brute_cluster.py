@@ -257,7 +257,6 @@ def brute_cluster(x, affinities, linkages,
     ax_bestbic.set_title("py(agg-gmm) BIC %3.0f from "%best_bic +
               str(best_combo_bic) + " k=" + str(best_k_bic) +
               ' ari=%1.3f'%best_ari_bic + ' reg=' + str(reg_bic))# + "iter=" + str(best_iter_bic))
-    ax_bestbic.legend()
     ax_bestbic.set_xlabel("First feature")
     ax_bestbic.set_ylabel("Second feature")
     if savefigs is not None:
