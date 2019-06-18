@@ -6,8 +6,8 @@ library("mclust")
 setwd("C:/Users/Thomas Athey/Documents/Labs/Labs/jovo/clustering/pyclust")
 
 #0-drosophila, 1-BC, 2-diabetes, 3-highd
-dataset = 0
-savefigs = 'drosophila'
+dataset = 3
+savefigs = 'lowd'
 
 if (dataset==0) {
   X <- read.csv(file='data/embedded_right.csv',header=TRUE,sep=',')

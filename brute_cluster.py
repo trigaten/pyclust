@@ -288,7 +288,7 @@ def brute_cluster(x, affinities, linkages,
                         label=titles[row])
             
         idxs = (bics!=-np.inf)*(aris!=-np.inf)
-        slope,_,r_value,_,p_value = stats.linregress(bics[idxs],aris[idxs])
+        _,_,r_value,_,_ = stats.linregress(bics[idxs],aris[idxs])
         ax_bicari.set_xlabel("BIC")
         ax_bicari.set_ylabel("ARI")
         ax_bicari.legend(loc='lower right')
@@ -301,7 +301,7 @@ def brute_cluster(x, affinities, linkages,
              5:'l1/complete',6:'l1/average',7:'l1/single',8:'cos/complete',
              9:'cos/average',10:'cos/single'}
     
-    f, ((ax0,ax1),(ax2,ax3)) = plt.subplots(2,2,sharey='row',sharex='col',figsize=(10,10))
+    _, ((ax0,ax1),(ax2,ax3)) = plt.subplots(2,2,sharey='row',sharex='col',figsize=(10,10))
     for row in np.arange(bics.shape[0]):
         if all(bics[row,:]==-np.inf):
             continue
