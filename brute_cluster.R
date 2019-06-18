@@ -6,8 +6,8 @@ library("mclust")
 setwd("C:/Users/Thomas Athey/Documents/Labs/Labs/jovo/clustering/pyclust")
 
 #0-drosophila, 1-BC, 2-diabetes, 3-highd
-dataset = 3
-savefigs = 'lowd'
+dataset = 0
+savefigs = 'drosophila'
 
 if (dataset==0) {
   X <- read.csv(file='data/embedded_right.csv',header=TRUE,sep=',')
@@ -75,7 +75,7 @@ for(model_num in 0:(length(BIC)-1)) {
 }
 stats <- data.frame('bic'=BIC[1:266],'ari'=ARI[1:266],'model'=ARI_models[1:266])
 linmod <- lm(stats$ari ~ stats$bic)
-header <- paste("Mclust's ARI vs BIC on Drosophila Data with Correlation r^2=",format(summary(linmod)$r.squared,digits=3),sep="")
+header <- paste("Mclust's ARI vs BIC on ", savefigs, " Data with Correlation r^2=",format(summary(linmod)$r.squared,digits=3),sep="")
 if (! is.null(savefigs)) {
   title <- paste(savefigs,'_r_bicari.jpg',sep="") 
   jpeg(title)

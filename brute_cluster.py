@@ -107,55 +107,56 @@ output:
 def cluster(data, aff, link, cov, k, c_true=None):
     iter_num=100
     if aff=='none' or link=='none':
-        try: #no regularization
-            reg=0
-            gmm = GaussianMixture(
+        reg = 0
+        while True:
+            try:
+                gmm = GaussianMixture(
                 n_components=k,covariance_type=cov,reg_covar=reg,
                 max_iter=iter_num,verbose=0,verbose_interval=1)
-            c_hat = gmm.fit_predict(data)
-            bic = processBIC(data,gmm.weights_,gmm.means_,
-                     gmm.covariances_,cov)
-            if any([sum(c_hat == i)<=1 for i in range(k)]) or bic==-np.inf:
-                raise ValueError
-        #if there was a numerical error during EM,or while calculating BIC,
-        #or if the clustering found a class with only one element
-        except: #regularize
-            reg=1e-6
-            gmm = GaussianMixture(
-                n_components=k,covariance_type=cov,reg_covar=reg,
-                max_iter=iter_num,verbose=0,verbose_interval=1)
-            c_hat = gmm.fit_predict(data)
-            bic = processBIC(data,gmm.weights_,gmm.means_,
-                     gmm.covariances_,cov)
+                c_hat = gmm.fit_predict(data)
+                bic = processBIC(data,gmm.weights_,gmm.means_,
+                         gmm.covariances_,cov)
+                if any([sum(c_hat == i)<=1 for i in range(k)]) or bic==-np.inf:
+                    raise ValueError
+                else:
+                    break
+            except:
+                pass
+            if reg == 0:
+                reg = 1e-6
+            elif reg > 1:
+                bic = -np.inf
+                break
+            else:
+                reg = reg*10
     else:
         one_hot = agglomerate(data,aff,link,k)
         weights, means, precisions = initialize_params(data, one_hot, cov)
         
-        try:
-            reg=0
-            gmm = GaussianMixture(
-                    n_components=k,covariance_type=cov,weights_init=weights,
-                    means_init=means,precisions_init=precisions,
-                    max_iter=iter_num, reg_covar=reg,
-                    verbose=0,verbose_interval=1)
-            c_hat = gmm.fit_predict(data)
-            bic = processBIC(data,gmm.weights_,gmm.means_,
-                     gmm.covariances_,cov)   
-            if any([sum(c_hat == i)<=1 for i in range(k)]) or bic==-np.inf:
-                raise ValueError
-        #if there was a numerical error, or if initial clustering produced a
-        #mixture component with only one element
-        except: 
-            reg=1e-6
-            gmm = GaussianMixture(
-                    n_components=k,covariance_type=cov,weights_init=weights,
-                    means_init=means,precisions_init=precisions,
-                    max_iter=iter_num, reg_covar=reg,
-                    verbose=0,verbose_interval=1)
-            c_hat = gmm.fit_predict(data)
-            bic = processBIC(data,gmm.weights_,gmm.means_,
-                     gmm.covariances_,cov)
-    
+        reg = 0
+        while True:
+            try:
+                gmm = GaussianMixture(
+                        n_components=k,covariance_type=cov,weights_init=weights,
+                        means_init=means,precisions_init=precisions,
+                        max_iter=iter_num, reg_covar=reg,
+                        verbose=0,verbose_interval=1)
+                c_hat = gmm.fit_predict(data)
+                bic = processBIC(data,gmm.weights_,gmm.means_,
+                         gmm.covariances_,cov)
+                if any([sum(c_hat == i)<=1 for i in range(k)]) or bic==-np.inf:
+                    raise ValueError
+                else:
+                    break
+            except:
+                pass
+            if reg == 0:
+                reg = 1e-6
+            elif reg > 1:
+                bic = -np.inf
+                break
+            else:
+                reg = reg*10
     
     if c_true is not None:    
         ari = adjusted_rand_score(c_true,c_hat)
@@ -231,6 +232,7 @@ def brute_cluster(x, affinities, linkages,
                         best_ari_bic = ari
                         best_means_bic = means
                         reg_bic = reg
+    
     
     #True plot**********************************
     plt.figure(figsize=(8,8))
@@ -321,6 +323,6 @@ def brute_cluster(x, affinities, linkages,
     if savefigs is not None:
         plt.savefig(savefigs+'_python_bicplot.jpg')
      
-    return bics, aris
+    return best_c_hat_bic
     
 

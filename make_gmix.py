@@ -1,7 +1,7 @@
 import numpy as np
 
 n = 100
-d = 3
+d = 10
 w = [0.33,0.33,0.34]
 
 k = len(w)

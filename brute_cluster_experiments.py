@@ -3,9 +3,9 @@ from brute_cluster import brute_cluster
 import csv
 
 
-#0-drosophila, 1-BC, 2-diabetes, 3-highd
-dataset = 3
-savefigs = 'lowd'
+#0-drosophila, 1-BC, 2-diabetes, 3-gaussianmix
+dataset = 1
+savefigs = 'bc'
 
 if dataset == 0:
     #Drosophila
@@ -20,7 +20,7 @@ elif dataset==1:
     ks = [i for i in range(1,10)]
     affinities = ['none','euclidean','manhattan','cosine']
     linkages = ['none','ward','complete','average','single']
-    covariance_types=['full','tied']
+    covariance_types=['full','tied','diag','spherical']
     
     #read mean texture, extreme area, and extreme smoothness
     x = np.genfromtxt('data/wdbc.data',delimiter=',', usecols = (3,25,26),skip_header=0)
@@ -52,5 +52,5 @@ elif dataset==3:
     c_true = np.genfromtxt('data/highd.csv', delimiter=',', usecols = (0),skip_header=0)
 
 
-bics, aris = brute_cluster(x, affinities, linkages, covariance_types, ks,
+c_hat = brute_cluster(x, affinities, linkages, covariance_types, ks,
                            c_true,savefigs)
