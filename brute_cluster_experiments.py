@@ -4,9 +4,9 @@ import csv
 
 
 
-dataset = 3 #0-drosophila, 1-BC, 2-diabetes, 3-gaussianmix
+dataset = 0 #0-drosophila, 1-BC, 2-diabetes, 3-gaussianmix
 #None - no figures will be saved, string - files will be saved with that name
-savefigs = "lowd" 
+savefigs = None 
 
 if dataset == 0:
     #Drosophila
@@ -53,5 +53,5 @@ elif dataset==3:
     c_true = np.genfromtxt('data/synthetic.csv', delimiter=',', usecols = (0),skip_header=0)
 
 
-c_hat = brute_cluster(x, affinities, linkages, covariance_types, ks,
+c_hat,_ = brute_cluster(x, affinities, linkages, covariance_types, ks,
                            c_true,savefigs)

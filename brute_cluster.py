@@ -183,7 +183,8 @@ inputs:
     verbose - if 0, no output, if 1, output the current clustering options
         being used
 outputs:
-    bics,aris - 44xlength(ks) array of bic and ari values for each clustering result
+    best_c_hat_bic - nx1 array of cluster membership
+    best_combo_bic - list of three strings - affinity, linkage, and covariance type (see earlier comments for possibilities)
 """
 def brute_cluster(x, affinities, linkages,
                   covariance_types, ks, c_true=None, savefigs=None, verbose=0):
@@ -326,6 +327,6 @@ def brute_cluster(x, affinities, linkages,
     if savefigs is not None:
         plt.savefig(savefigs+'_python_bicplot.jpg')
     plt.show()
-    return best_c_hat_bic
+    return best_c_hat_bic, best_combo_bic
     
 
