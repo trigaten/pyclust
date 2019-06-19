@@ -53,5 +53,5 @@ elif dataset==3:
     c_true = np.genfromtxt('data/synthetic.csv', delimiter=',', usecols = (0),skip_header=0)
 
 
-c_hat,_ = brute_cluster(x, affinities, linkages, covariance_types, ks,
+c_hat,_,_ = brute_cluster(x, affinities, linkages, covariance_types, ks,
                            c_true,savefigs)

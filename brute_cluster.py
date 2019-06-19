@@ -184,7 +184,9 @@ inputs:
         being used
 outputs:
     best_c_hat_bic - nx1 array of cluster membership
-    best_combo_bic - list of three strings - affinity, linkage, and covariance type (see earlier comments for possibilities)
+    best_combo_bic - list of three strings identifying the affinity, linkage, and covariance type that gave best BIC
+        (see earlier comments for possibilities)
+    best_k_bic - integer indicating the number of clusters that gave best BIC
 """
 def brute_cluster(x, affinities, linkages,
                   covariance_types, ks, c_true=None, savefigs=None, verbose=0):
@@ -327,6 +329,6 @@ def brute_cluster(x, affinities, linkages,
     if savefigs is not None:
         plt.savefig(savefigs+'_python_bicplot.jpg')
     plt.show()
-    return best_c_hat_bic, best_combo_bic
+    return best_c_hat_bic, best_combo_bic, best_k_bic
     
 
