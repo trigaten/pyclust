@@ -1,3 +1,4 @@
+#%%
 import numpy as np
 
 n = 100
@@ -20,3 +21,5 @@ for i in np.arange(n):
     x[i,1:] = np.random.multivariate_normal(means[component],cov[component])
     
 np.savetxt('data/synthetic.csv',x,delimiter=',')
+
+#%%

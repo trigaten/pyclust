@@ -174,7 +174,6 @@ def brute_cluster(x, affinities, linkages,
     Cluster all combinations of options and plot results
     inputs:
         x - nxd array of data
-        c_true - n array of true clustering
         affinites - list of affinity modes, each must be an element of
             ['none,'euclidean','manhattan','cosine']
         linkages - list of linkage modes, each must be an element of
@@ -182,6 +181,7 @@ def brute_cluster(x, affinities, linkages,
         covariance_types - list of covariance modes, each must be an element of
             ['full','tied','diag','spherical']
         ks - list of cluster numbers
+        c_true - n array of true clustering
         savefigs - None indicates that figures should not be saved, a string value
             indicates the name that should be used when saving the figures
         verbose - if 0, no output, if 1, output the current clustering options
@@ -329,17 +329,26 @@ def brute_cluster(x, affinities, linkages,
     
     ax0.set_title(titles[0],fontsize=20,fontweight='bold')
     ax0.set_ylabel('BIC',fontsize=20)
-    ax0.set_xticks(np.arange(0,21,2))
+    ax0.locator_params(axis='y',tight=True,nbins=4)
+    ax0.set_yticklabels(ax0.get_yticks(),fontsize=14)
+
     ax1.set_title(titles[1],fontsize=20,fontweight='bold')
-    ax1.legend(loc='best',title='Agglomeration Method',fontsize=12)
-    ax1.set_xticks(np.arange(0,21,2))
+    legend = ax1.legend(loc='best',title='Agglomeration\nMethod',fontsize=12)
+    plt.setp(legend.get_title(),fontsize=14)
+
     ax2.set_title(titles[2],fontsize=20,fontweight='bold')
     ax2.set_xlabel('Number of components',fontsize=20)
+    ax2.set_xticks(np.arange(0,21,4))
+    ax2.set_xticklabels(ax2.get_xticks(),fontsize=14)
     ax2.set_ylabel('BIC',fontsize=20)
-    ax2.set_xticks(np.arange(0,21,2))
+    ax2.locator_params(axis='y',tight=True,nbins=4)
+    ax2.set_yticklabels(ax2.get_yticks(),fontsize=14)
+    
+
     ax3.set_title(titles[3],fontsize=20,fontweight='bold')
     ax3.set_xlabel('Number of components',fontsize=20)
-    ax3.set_xticks(np.arange(0,21,2))
+    ax3.set_xticks(np.arange(0,21,4))
+    ax3.set_xticklabels(ax3.get_xticks(),fontsize=14)
 
 
     if savefigs is not None:
