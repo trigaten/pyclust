@@ -26,21 +26,22 @@ colors = ['red','green','blue','orange','purple','yellow','black','brown',
           'gold','slategray','peru','indianred','darkolivegreen',
           'navy','darkgoldenrod','deeppink','darkkhaki','silver','saddlebrown']
 
-"""
-Hierarchical Agglomeration
-inputs:
-    data - nxd numpy array
-    aff - affinity technique, an element of ['euclidean','manhattan','cosine']
-    link - linkage technique, an element of ['ward','complete','average','single']
-    k - number of clusters
-outputs:
-     one_hot - nxk numpy array with a single one in each row indicating cluster
-         membership
-exceptions:
-    ward linkage can only be used with euclidean/l2 affinity so if ward is 
-    specified with a different linkage then there is an Exception
-"""
+
 def agglomerate(data, aff, link, k):
+    """
+    Hierarchical Agglomeration
+    inputs:
+        data - nxd numpy array
+        aff - affinity technique, an element of ['euclidean','manhattan','cosine']
+        link - linkage technique, an element of ['ward','complete','average','single']
+        k - number of clusters
+    outputs:
+        one_hot - nxk numpy array with a single one in each row indicating cluster
+            membership
+    exceptions:
+        ward linkage can only be used with euclidean/l2 affinity so if ward is 
+        specified with a different linkage then there is an Exception
+    """
     n=data.shape[0]
     if link=='ward' and aff !='euclidean': 
         raise Exception('Ward linkage is only valid with Euclidean affinity')
@@ -49,25 +50,26 @@ def agglomerate(data, aff, link, k):
     one_hot[np.arange(n),agglom.labels_] = 1
     return one_hot
 
-"""
-sklearn's Gaussian Mixture does not allow initialization from class membership
-but it does allow from initialization of mixture parameters, so here we calculate
-the mixture parameters according to class membership
 
-input:
-    data - nxd numpy array 
-    one_hot - nxd numpy array with a single one in each row indicating cluster
-         membership
-    k - number of clusters
-output:
-    weights - k array of mixing weights
-    means - kxd array of means of mixture components
-    precisions - precision matrices, format depends on the EM clustering option
-        (eg 'full' mode needs a list of matrices, one for each mixture
-        component,but 'tied' mode only needs a single matrix, since all
-        precisions are constrained to be equal)
-"""
 def initialize_params(data, one_hot, cov):
+    """
+    sklearn's Gaussian Mixture does not allow initialization from class membership
+    but it does allow from initialization of mixture parameters, so here we calculate
+    the mixture parameters according to class membership
+
+    input:
+        data - nxd numpy array 
+        one_hot - nxd numpy array with a single one in each row indicating cluster
+            membership
+        k - number of clusters
+    output:
+        weights - k array of mixing weights
+        means - kxd array of means of mixture components
+        precisions - precision matrices, format depends on the EM clustering option
+            (eg 'full' mode needs a list of matrices, one for each mixture
+            component,but 'tied' mode only needs a single matrix, since all
+            precisions are constrained to be equal)
+    """
     n=data.shape[0]
     weights, means, covariances = _estimate_gaussian_parameters(
             data, one_hot, 1e-06, cov)
@@ -87,35 +89,36 @@ def initialize_params(data, one_hot, cov):
     
     
 
-"""
-Cluster according to specified method
-input:
-    data - nxk numpy matrix of data
-    c_true - n array of true cluster membership
-    aff - affinity, element of ['euclidean','manhattan','cosine'] or none for EM from scratch
-    link - linkage, element of ['ward','complete','average','single'], or none for EM from scratch
-    cov - covariance, element of ['full','tied','diag','spherical']
-    k - # of clusters
-output:
-    c_hat - n array of clustering results
-    means - kxd array of means of mixture components
-    bic - Bayes Information Criterion for this clustering
-    ari - Adjusted Rand Index to comparing clustering result to true clustering
-    reg - regularization parameter that was used in the clustering results
-        (0 or 1e-6)
-"""
+
 def cluster(data, aff, link, cov, k, c_true=None):
-    iter_num=100
+    """
+    Cluster according to specified method
+
+    input:
+        data - nxk numpy matrix of data
+        c_true - n array of true cluster membership
+        aff - affinity, element of ['euclidean','manhattan','cosine'] or none for EM from scratch
+        link - linkage, element of ['ward','complete','average','single'], or none for EM from scratch
+        cov - covariance, element of ['full','tied','diag','spherical']
+        k - # of clusters
+    output:
+        c_hat - n array of clustering results
+        means - kxd array of means of mixture components
+        bic - Bayes Information Criterion for this clustering
+        ari - Adjusted Rand Index to comparing clustering result to true clustering
+        reg - regularization parameter that was used in the clustering results
+            (0 or 1e-6)
+    """
+    means = None
     if aff=='none' or link=='none':
-        reg = 0
+        reg = 1e-6
         while True:
             try:
                 gmm = GaussianMixture(
-                n_components=k,covariance_type=cov,reg_covar=reg,
-                max_iter=iter_num,verbose=0,verbose_interval=1)
+                n_components=k,covariance_type=cov,reg_covar=reg)
                 c_hat = gmm.fit_predict(data)
-                bic = processBIC(data,gmm.weights_,gmm.means_,
-                         gmm.covariances_,cov)
+                bic = -gmm.bic(data) #processBIC(data,gmm.weights_,gmm.means_,gmm.covariances_,cov)
+                means = gmm.means_
                 if any([sum(c_hat == i)<=1 for i in range(k)]) or bic==-np.inf:
                     raise ValueError
                 else:
@@ -131,19 +134,17 @@ def cluster(data, aff, link, cov, k, c_true=None):
                 reg = reg*10
     else:
         one_hot = agglomerate(data,aff,link,k)
-        weights, means, precisions = initialize_params(data, one_hot, cov)
+        init_weights, init_means, init_precisions = initialize_params(data, one_hot, cov)
         
         reg = 0
         while True:
             try:
                 gmm = GaussianMixture(
-                        n_components=k,covariance_type=cov,weights_init=weights,
-                        means_init=means,precisions_init=precisions,
-                        max_iter=iter_num, reg_covar=reg,
-                        verbose=0,verbose_interval=1)
+                        n_components=k,covariance_type=cov,weights_init=init_weights,
+                        means_init=init_means,precisions_init=init_precisions)
                 c_hat = gmm.fit_predict(data)
-                bic = processBIC(data,gmm.weights_,gmm.means_,
-                         gmm.covariances_,cov)
+                bic = -gmm.bic(data) #processBIC(data,gmm.weights_,gmm.means_,gmm.covariances_,cov)
+                means = gmm.means_
                 if any([sum(c_hat == i)<=1 for i in range(k)]) or bic==-np.inf:
                     raise ValueError
                 else:
@@ -163,33 +164,34 @@ def cluster(data, aff, link, cov, k, c_true=None):
     else:
         ari = None
         
-    means = gmm.means_
+    
     return c_hat, means, bic, ari, reg
 
-"""
-Cluster all combinations of options and plot results
-inputs:
-    x - nxd array of data
-    c_true - n array of true clustering
-    affinites - list of affinity modes, each must be an element of
-        ['none,'euclidean','manhattan','cosine']
-    linkages - list of linkage modes, each must be an element of
-        ['none','ward','complete','average','single']
-    covariance_types - list of covariance modes, each must be an element of
-        ['full','tied','diag','spherical']
-    ks - list of cluster numbers
-    savefigs - None indicates that figures should not be saved, a string value
-        indicates the name that should be used when saving the figures
-    verbose - if 0, no output, if 1, output the current clustering options
-        being used
-outputs:
-    best_c_hat_bic - nx1 array of cluster membership
-    best_combo_bic - list of three strings identifying the affinity, linkage, and covariance type that gave best BIC
-        (see earlier comments for possibilities)
-    best_k_bic - integer indicating the number of clusters that gave best BIC
-"""
+
 def brute_cluster(x, affinities, linkages,
                   covariance_types, ks, c_true=None, savefigs=None, verbose=0):
+    """
+    Cluster all combinations of options and plot results
+    inputs:
+        x - nxd array of data
+        c_true - n array of true clustering
+        affinites - list of affinity modes, each must be an element of
+            ['none,'euclidean','manhattan','cosine']
+        linkages - list of linkage modes, each must be an element of
+            ['none','ward','complete','average','single']
+        covariance_types - list of covariance modes, each must be an element of
+            ['full','tied','diag','spherical']
+        ks - list of cluster numbers
+        savefigs - None indicates that figures should not be saved, a string value
+            indicates the name that should be used when saving the figures
+        verbose - if 0, no output, if 1, output the current clustering options
+            being used
+    outputs:
+        best_c_hat_bic - nx1 array of cluster membership
+        best_combo_bic - list of three strings identifying the affinity, linkage, and covariance type that gave best BIC
+            (see earlier comments for possibilities)
+        best_k_bic - integer indicating the number of clusters that gave best BIC
+    """
     cov_dict = {'full':0, 'tied':1,'diag':2,'spherical':3}
     aff_dict = {'none':0,'euclidean':0,'manhattan':1,'cosine':2}
     link_dict = {'none':0,'ward':1, 'complete':2, 'average':3, 'single':4}
@@ -236,19 +238,15 @@ def brute_cluster(x, affinities, linkages,
                         best_means_bic = means
                         reg_bic = reg
     
-    
-    #True plot**********************************
-    fig_true = plt.figure(figsize=(8,8))
-    ptcolors = [colors[i] for i in c_true.astype(int)]
-    ax_true = fig_true.add_subplot(1,1,1)
-    ax_true.scatter(x[:,0],x[:,1],c=ptcolors)
-    ax_true.set_title("True labels")
-    ax_true.set_xlabel("First feature")
-    ax_true.set_ylabel("Second feature")
-    if savefigs is not None:
-        plt.savefig(savefigs+'_python_true.jpg')
+
+
 
     #Plot with best BIC*********************************
+    if c_true is None:
+        best_ari_bic_str = 'NA'
+    else:
+        best_ari_bic_str = '%1.3f'%best_ari_bic
+
     fig_bestbic = plt.figure(figsize=(8,8))
     ax_bestbic = fig_bestbic.add_subplot(1,1,1)
     #ptcolors = [colors[i] for i in best_c_hat_bic]
@@ -259,7 +257,7 @@ def brute_cluster(x, affinities, linkages,
                 c=mncolors,marker='x')
     ax_bestbic.set_title("py(agg-gmm) BIC %3.0f from "%best_bic +
               str(best_combo_bic) + " k=" + str(best_k_bic) +
-              ' ari=%1.3f'%best_ari_bic + ' reg=' + str(reg_bic))# + "iter=" + str(best_iter_bic))
+              ' ari=' + best_ari_bic_str + ' reg=' + str(reg_bic))# + "iter=" + str(best_iter_bic))
     ax_bestbic.set_xlabel("First feature")
     ax_bestbic.set_ylabel("Second feature")
     if savefigs is not None:
@@ -268,6 +266,18 @@ def brute_cluster(x, affinities, linkages,
     titles = ['full','tied','diag','spherical']
     
     if c_true is not None:
+        #True plot**********************************
+        fig_true = plt.figure(figsize=(8,8))
+        ptcolors = [colors[i] for i in c_true.astype(int)]
+        ax_true = fig_true.add_subplot(1,1,1)
+        ax_true.scatter(x[:,0],x[:,1],c=ptcolors)
+        ax_true.set_title("True labels")
+        ax_true.set_xlabel("First feature")
+        ax_true.set_ylabel("Second feature")
+        if savefigs is not None:
+            plt.savefig(savefigs+'_python_true.jpg')
+
+
         #Plot with best ARI************************************
         fig_bestari = plt.figure(figsize=(8,8))
         ax_bestari = fig_bestari.add_subplot(1,1,1)
@@ -294,7 +304,7 @@ def brute_cluster(x, affinities, linkages,
         _,_,r_value,_,_ = stats.linregress(bics[idxs],aris[idxs])
         ax_bicari.set_xlabel("BIC")
         ax_bicari.set_ylabel("ARI")
-        ax_bicari.legend(loc='lower right')
+        ax_bicari.legend(loc='best',title='Agglomeration Method')
         ax_bicari.set_title("Pyclust's ARI vs BIC for Drosophila Data with Correlation r^2=%2.2f"%(r_value**2))
         if savefigs is not None:
             plt.savefig(savefigs+'_python_bicari.jpg')
@@ -317,15 +327,21 @@ def brute_cluster(x, affinities, linkages,
         elif row<=43:
             ax3.plot(np.arange(1,len(ks)+1),bics[row,:])
     
-    ax0.set_title(titles[0])
-    ax0.set(ylabel='bic')
-    ax1.set_title(titles[1])
-    ax1.legend(loc='lower right')
-    ax2.set_title(titles[2])
-    ax2.set(xlabel='k')
-    ax2.set(ylabel='bic')
-    ax3.set_title(titles[3])
-    ax3.set(xlabel='k')
+    ax0.set_title(titles[0],fontsize=20,fontweight='bold')
+    ax0.set_ylabel('BIC',fontsize=20)
+    ax0.set_xticks(np.arange(0,21,2))
+    ax1.set_title(titles[1],fontsize=20,fontweight='bold')
+    ax1.legend(loc='best',title='Agglomeration Method',fontsize=12)
+    ax1.set_xticks(np.arange(0,21,2))
+    ax2.set_title(titles[2],fontsize=20,fontweight='bold')
+    ax2.set_xlabel('Number of components',fontsize=20)
+    ax2.set_ylabel('BIC',fontsize=20)
+    ax2.set_xticks(np.arange(0,21,2))
+    ax3.set_title(titles[3],fontsize=20,fontweight='bold')
+    ax3.set_xlabel('Number of components',fontsize=20)
+    ax3.set_xticks(np.arange(0,21,2))
+
+
     if savefigs is not None:
         plt.savefig(savefigs+'_python_bicplot.jpg')
     plt.show()

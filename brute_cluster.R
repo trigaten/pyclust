@@ -5,7 +5,7 @@ Runs all clustering methods and saves that with the best ari and bic
 library("mclust")
 setwd("C:/Users/Thomas Athey/Documents/Labs/Labs/jovo/clustering/pyclust")
 
-#0-drosophila, 1-BC, 2-diabetes, 3-highd
+#0-drosophila, 1-BC, 2-diabetes, 3-synthetic
 dataset = 3
 savefigs = 'lowd'
 
@@ -14,13 +14,13 @@ if (dataset==0) {
   c_file <- read.csv(file='data/classes.csv',header=TRUE,sep=',')
   c <- factor(c_file$x)
   modelNames=mclust.options("emModelNames")
-  ks <- 1:19
+  ks <- 1:20
 } else if (dataset==1) {
   #read mean texture, extreme area, and extreme smoothness
   X <- read.csv(file='data/wdbc.data',header=FALSE,sep=',')[,c(4,26,27)]
   c <- read.csv(file='data/wdbc.data',header=FALSE,sep=',')[,2]
-  modelNames=c("VVV","EEE","EEV","VEV")
-  ks <- 1:9
+  modelNames=mclust.options("emModelNames")
+  ks <- 1:20
 } else if (dataset==2) {
   #read glucose area, insulin area, and SSPG
   X <- read.csv(file='data/T36.1',header=FALSE,sep = ',')[,c(7,8,9)]
@@ -28,8 +28,8 @@ if (dataset==0) {
   modelNames=mclust.options("emModelNames")
   ks <- 1:20
 } else if (dataset==3) {
-  X <- read.csv(file='data/highd.csv',header=FALSE,sep = ',')[,-1]
-  c <- read.csv(file='data/highd.csv',header=FALSE, sep = ',')[,1]+1
+  X <- read.csv(file='data/synthetic.csv',header=FALSE,sep = ',')[,-1]
+  c <- read.csv(file='data/synthetic.csv',header=FALSE, sep = ',')[,1]+1
   modelNames=mclust.options("emModelNames")
   ks <- 1:20
 }

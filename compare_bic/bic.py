@@ -8,19 +8,20 @@ Created on Mon Mar 25 16:12:14 2019
 import numpy as np
 from scipy.stats import multivariate_normal
 
-"""
-Calculates likelihood of a set of data from a GMM, then calculates BIC
-Inputs:
-    x - nxd datapoints
-    wts - list of mixture weights (same length as means and variances)
-    means - list of d numpy arrays of mixture means
-    variances - list of dxd covariance matrices
-    k - number of parameters
-    
-Outputs:
-    bic - BIC where higher is better
-"""
+
 def calcBIC(x,wts,means,variances,k):
+    """
+    Calculates likelihood of a set of data from a GMM, then calculates BIC
+    Inputs:
+        x - nxd datapoints
+        wts - list of mixture weights (same length as means and variances)
+        means - list of d numpy arrays of mixture means
+        variances - list of dxd covariance matrices
+        k - number of parameters
+        
+    Outputs:
+        bic - BIC where higher is better
+    """
     n = x.shape[0]
     likelihood = 0
     for wt,mu,var in zip(wts,means,variances):
@@ -36,22 +37,23 @@ def calcBIC(x,wts,means,variances,k):
     return bic
 
 
-"""
-Calculates BIC from input that is formatted either as the sklearn GaussianMixture
-components or from data that was saved to a csv in R
- 
-Inputs
-    data - nxd numpy array of data
-    wts - k numpy array of mixture weights
-    mus - kxd numpy array of means
-    covs - kxdxd in the case of r and in python, the shape depends on the model type
-        (see GaussianMixture class)
-    m - a string that specifies the model, and implies that format of the other inputs
-        (e.g. 'VII' implies that the parameters were read from a csv that was written by R)
-Outputs
-    BIC - bic value as calculated by the function above
-"""
+
 def processBIC(data,wts,mus,covs,m):
+    """
+    Calculates BIC from input that is formatted either as the sklearn GaussianMixture
+    components or from data that was saved to a csv in R
+    
+    Inputs
+        data - nxd numpy array of data
+        wts - k numpy array of mixture weights
+        mus - kxd numpy array of means
+        covs - kxdxd in the case of r and in python, the shape depends on the model type
+            (see GaussianMixture class)
+        m - a string that specifies the model, and implies that format of the other inputs
+            (e.g. 'VII' implies that the parameters were read from a csv that was written by R)
+    Outputs
+        BIC - bic value as calculated by the function above
+    """
     d = data.shape[1]
     k = len(wts)
     

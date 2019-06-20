@@ -1,16 +1,17 @@
 import numpy as np
 from brute_cluster import brute_cluster
 import csv
+from cluster_metrics import best_supercluster
 
 
 
-dataset = 0 #0-drosophila, 1-BC, 2-diabetes, 3-gaussianmix
+dataset = 3 #0-drosophila, 1-BC, 2-diabetes, 3-gaussianmix
 #None - no figures will be saved, string - files will be saved with that name
-savefigs = None 
+savefigs = 'lowd' 
 
 if dataset == 0:
     #Drosophila
-    ks = [i for i in range(1,19)]
+    ks = [i for i in range(1,21)]
     affinities = ['none','euclidean','manhattan','cosine']
     linkages = ['none','ward','complete','average','single']
     covariance_types=['full','tied','diag','spherical']
@@ -18,7 +19,7 @@ if dataset == 0:
     c_true = np.genfromtxt('data/classes.csv',skip_header=1)
 elif dataset==1:
     #Wisconsin Diagnostic Data
-    ks = [i for i in range(1,10)]
+    ks = [i for i in range(1,21)]
     affinities = ['none','euclidean','manhattan','cosine']
     linkages = ['none','ward','complete','average','single']
     covariance_types=['full','tied','diag','spherical']
@@ -55,3 +56,5 @@ elif dataset==3:
 
 c_hat,_,_ = brute_cluster(x, affinities, linkages, covariance_types, ks,
                            c_true,savefigs)
+
+#super_ari, c_new = best_supercluster(c_hat,c_true)
