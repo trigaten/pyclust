@@ -213,7 +213,7 @@ def brute_cluster(x, affinities, linkages,
                     continue
                 for cov in covariance_types:
                     if verbose == 1:
-                        print('K='+k+' Affinity= '+af+' Linkage= '+li+
+                        print('K='+str(k)+' Affinity= '+af+' Linkage= '+li+
                               ' Covariance= ' + cov)
                     row = 11*cov_dict[cov] + 3*aff_dict[af] + link_dict[li]
                     
