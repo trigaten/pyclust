@@ -8,7 +8,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.cluster import KMeans
 from brute_cluster import brute_cluster
-
 import pytest
 
 k = 3 #number of different clusters to be created
