@@ -15,6 +15,7 @@ means = [] #initializing blank list
 means.append([500, 200])
 means.append([200, 600])
 means.append([100, 100])
+
 covs = [None, None, None] #covariance matrices
 vectors = np.zeros([600, 2]) #list of all the points 
 
