@@ -15,7 +15,7 @@ means = [] #initializing blank list
 means.append([500, 200])
 means.append([200, 600])
 means.append([100, 100])
-covs = [0, 0, 0] #covariance matrices
+covs = [None, None, None] #covariance matrices
 vectors = np.zeros([600, 2]) #list of all the points 
 
 affinities = ['none', 'euclidean','manhattan','cosine']
@@ -80,3 +80,5 @@ def __plot(vectors, title):
     graph.scatter(x, y)
     graph.set_title(title,fontsize=15,fontweight='normal', y=1.0)
     plt.show()
+
+testFull()

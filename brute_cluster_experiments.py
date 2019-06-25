@@ -2,10 +2,11 @@ import numpy as np
 from brute_cluster import brute_cluster
 import csv
 from cluster_metrics import best_supercluster
+from sklearn.datasets import load_iris
+from sklearn import datasets
 
 
-
-dataset = 3 #0-drosophila, 1-BC, 2-diabetes, 3-gaussianmix
+dataset = 4 #0-drosophila, 1-BC, 2-diabetes, 3-gaussianmix 4-iris
 #None - no figures will be saved, string - files will be saved with that name
 savefigs = None 
 
@@ -52,7 +53,16 @@ elif dataset==3:
     x = np.genfromtxt('data/synthetic.csv', delimiter=',',skip_header=0)
     x = x[:,np.arange(1,x.shape[1])]
     c_true = np.genfromtxt('data/synthetic.csv', delimiter=',', usecols = (0),skip_header=0)
+elif dataset==4:
+    # iris 
+    ks = [i for i in range(1,11)]
+    affinities = ['none','euclidean','manhattan','cosine']
+    linkages = ['none','ward','complete','average','single']
+    covariance_types=['full','tied','diag','spherical']
 
+    iris = datasets.load_iris()
+    x = iris.data # this does run
+    c_true = iris.target
 
 c_hat,_,_ = brute_cluster(x, affinities, linkages, covariance_types, ks,
                            c_true,savefigs)

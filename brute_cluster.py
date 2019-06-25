@@ -335,10 +335,10 @@ def brute_cluster(x, affinities, linkages,
     ax1.set_title(titles[1],fontsize=20,fontweight='bold')
     legend = ax1.legend(loc='best',title='Agglomeration\nMethod',fontsize=12)
     plt.setp(legend.get_title(),fontsize=14)
+    ax1.set_yticklabels(ax1.get_yticks(),fontsize=14)
 
     ax2.set_title(titles[2],fontsize=20,fontweight='bold')
     ax2.set_xlabel('Number of components',fontsize=20)
-    ax2.set_xticks(np.arange(0,21,4))
     ax2.set_xticklabels(ax2.get_xticks(),fontsize=14)
     ax2.set_ylabel('BIC',fontsize=20)
     ax2.locator_params(axis='y',tight=True,nbins=4)
@@ -347,7 +347,6 @@ def brute_cluster(x, affinities, linkages,
 
     ax3.set_title(titles[3],fontsize=20,fontweight='bold')
     ax3.set_xlabel('Number of components',fontsize=20)
-    ax3.set_xticks(np.arange(0,21,4))
     ax3.set_xticklabels(ax3.get_xticks(),fontsize=14)
 
 
