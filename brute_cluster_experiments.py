@@ -59,12 +59,13 @@ elif dataset==4:
     affinities = ['none','euclidean','manhattan','cosine']
     linkages = ['none','ward','complete','average','single']
     covariance_types=['full','tied','diag','spherical']
-
     iris = datasets.load_iris()
     x = iris.data # this does run
     c_true = iris.target
 
-c_hat,_,_ = brute_cluster(x, affinities, linkages, covariance_types, ks,
-                           c_true,savefigs)
+
+graph_types=['true', 'all_bics', 'best_ari', 'best_bic', 'ari_vs_bic']
+c_hat,_,_ = brute_cluster(x, affinities, linkages, covariance_types, ks, 
+                        c_true, savefigs, 0, graph_types)
 
 #super_ari, c_new = best_supercluster(c_hat,c_true)
